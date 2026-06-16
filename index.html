@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Check-List - Transportes Antemi</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --accent: #2563eb;
+            --bg-gray: #f8fafc;
+            --border: #cbd5e1;
+            --text-dark: #1e293b;
+            --whatsapp: #25d366;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .main-header {
+            text-align: center;
+            border-bottom: 4px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .main-header h1 { margin: 0; color: var(--primary); font-size: 26px; }
+        .main-header p { margin: 5px 0 0; color: #64748b; font-size: 14px; }
+
+        /* Pestañas Tipo Excel */
+        .excel-tabs {
+            display: flex;
+            background: #e2e8f0;
+            padding: 5px 5px 0 5px;
+            border-radius: 6px 6px 0 0;
+            gap: 4px;
+        }
+
+        .tab-link {
+            padding: 10px 20px;
+            border: none;
+            background: #cbd5e1;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab-link.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+
+        .tab-content {
+            display: none;
+            border: 1px solid var(--border);
+            border-top: none;
+            padding: 20px;
+            background: white;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .tab-content.active { display: block; }
+
+        /* Bloques de Información Inicial */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+
+        .meta-field { display: flex; flex-direction: column; }
+        .meta-field label { font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
+        .meta-field input { padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 14px; }
+
+        /* Tablas de Inspección */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .section-divider {
+            background-color: #cbd5e1 !important;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .critical-row { color: #b91c1c; font-weight: 600; }
+
+        .options-cell { display: flex; gap: 12px; }
+        .options-cell label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+
+        .text-comment {
+            width: 95%;
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-print { background: var(--accent); color: white; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .app-container { box-shadow: none; padding: 0; }
+            .excel-tabs, .action-bar { display: none; }
+            .tab-content { display: block !important; page-break-after: always; border: none; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="main-header">
+        <h1>TRANSPORTES ANTEMI SpA</h1>
+        <p>SISTEMA CONTROL DE HOJAS DE VERIFICACIÓN OPERATIVA</p>
+    </div>
+
+    <!-- Pestañas Tipo Excel -->
+    <div class="excel-tabs">
+        <button class="tab-link active" onclick="openSheet(event, 'rampla')">Camión Rampla</button>
+        <button class="tab-link" onclick="openSheet(event, 'eslingas')">Eslingas planas</button>
+    </div>
+
+    <!-- HOJA 1: CAMIÓN RAMPLA -->
+    <div id="rampla" class="tab-content active">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>LISTA DE VERIFICACIÓN - CAMIÓN RAMPLA</h3>
+            <span style="font-size:12px; color:#64748b; font-weight:bold;">CÓDIGO: OT478-FO-SSO-0009</span>
+        </div>
+        
+        <div class="meta-grid">
+            <div class="meta-field"><label>Obra / Base:</label><input type="text" id="r_obra"></div>
+            <div class="meta-field"><label>Operador / Conductor:</label><input type="text" id="r_chofer"></div>
+            <div class="meta-field"><label>Fecha:</label><input type="date" id="r_fecha"></div>
+            <div class="meta-field"><label>Marca Vehículo:</label><input type="text" id="r_marca"></div>
+            <div class="meta-field"><label>Modelo:</label><input type="text" id="r_modelo"></div>
+            <div class="meta-field"><label>Patente:</label><input type="text" id="r_patente"></div>
+            <div class="meta-field"><label>Kilometraje (KMS):</label><input type="number" id="r_kms"></div>
+        </div>
+
+        <table id="table_rampla">
+            <thead>
+                <tr>
+                    <th style="width: 45%;">Elementos a Inspeccionar</th>
+                    <th style="width: 20%;">Evaluación</th>
+                    <th style="width: 35%;">Observaciones / Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="section-divider"><td colspan="3">1. MECÁNICA Y DETALLES GENERALES</td></tr>
+                <tr><td class="task-name">Aseo General de la Cabina</td><td><div class="options-cell"><label><input type="radio" name="r1" value="SI">SI</label><label><input type="radio" name="r1" value="NO">NO</label><label><input type="radio" name="r1" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr><td class="task-name">Bocina de Aire / Reglamento</td><td><div class="options-cell"><label><input type="radio" name="r2" value="SI">SI</label><label><input type="radio" name="r2" value="NO">NO</label><label><input type="radio" name="r2" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr><td class="task-name">Baliza estroboscópica operativa</td><td><div class="options-cell"><label><input type="radio" name="r3" value="SI">SI</label><label><input type="radio" name="r3" value="NO">NO</label><label><input type="radio" name="r3" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr><td class="task-name">Cinturones de Seguridad ajustables</td><td><div class="options-cell"><label><input type="radio" name="r4" value="SI">SI</label><label><input type="radio" name="r4" value="NO">NO</label><label><input type="radio" name="r4" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr class="critical-row"><td class="task-name">Cuñas de Seguridad (Mínimo 2 unidades) (*)</td><td><div class="options-cell"><label><input type="radio" name="r5" value="SI">SI</label><label><input type="radio" name="r5" value="NO">NO</label><label><input type="radio" name="r5" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                
+                <tr class="section-divider"><td colspan="3">2. NEUMÁTICOS, EJES Y SUJECIÓN</td></tr>
+                <tr><td class="task-name">Inspección de Tuercas y Pernos de Ruedas</td><td><div class="options-cell"><label><input type="radio" name="r6" value="SI">SI</label><label><input type="radio" name="r6" value="NO">NO</label><label><input type="radio" name="r6" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr class="critical-row"><td class="task-name">Seguros Plásticos de Tuercas (Checkers) (*)</td><td><div class="options-cell"><label><input type="radio" name="r7" value="SI">SI</label><label><input type="radio" name="r7" value="NO">NO</label><label><input type="radio" name="r7" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr class="critical-row"><td class="task-name">Estado de Neumáticos (Ejes 1, 2 y 3) (*)</td><td><div class="options-cell"><label><input type="radio" name="r8" value="SI">SI</label><label><input type="radio" name="r8" value="NO">NO</label><label><input type="radio" name="r8" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+
+                <tr class="section-divider"><td colspan="3">3. SEGURIDAD OBLIGATORIA Y DOCUMENTACIÓN</td></tr>
+                <tr class="critical-row"><td class="task-name">Extintor de Incendios PQS (Vigente y Cargado) (*)</td><td><div class="options-cell"><label><input type="radio" name="r9" value="SI">SI</label><label><input type="radio" name="r9" value="NO">NO</label><label><input type="radio" name="r9" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr class="critical-row"><td class="task-name">Botiquín de Primeros Auxilios completo (*)</td><td><div class="options-cell"><label><input type="radio" name="r10" value="SI">SI</label><label><input type="radio" name="r10" value="NO">NO</label><label><input type="radio" name="r10" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr class="critical-row"><td class="task-name">Luces de Freno e Indicadores de Viraje (*)</td><td><div class="options-cell"><label><input type="radio" name="r11" value="SI">SI</label><label><input type="radio" name="r11" value="NO">NO</label><label><input type="radio" name="r11" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr class="critical-row"><td class="task-name">Documentación Vigente (Permiso, Rev. Técnica) (*)</td><td><div class="options-cell"><label><input type="radio" name="r12" value="SI">SI</label><label><input type="radio" name="r12" value="NO">NO</label><label><input type="radio" name="r12" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- HOJA 2: ESLINGAS PLANAS -->
+    <div id="eslingas" class="tab-content">
+        <h3>CHECK LIST DE ESLINGAS PLANAS Y GRILLETES</h3>
+        <p style="font-size:12px; color:#475569; font-style:italic;">Instrucción: Coloque la marca pertinente. Nota: Defectos en costuras o cortes inhabilitan de inmediato el uso del elemento.</p>
+        
+        <div class="meta-grid">
+            <div class="meta-field"><label>Fecha de Inspección:</label><input type="date" id="e_fecha"></div>
+            <div class="meta-field"><label>Área / Sector:</label><input type="text" id="e_area" value="Operaciones"></div>
+            <div class="meta-field"><label>Inspector / Cargo:</label><input type="text" id="e_inspector"></div>
+        </div>
+
+        <table id="table_eslingas">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">N°</th>
+                    <th style="width: 50%;">Estándar / Punto Crítico a Validar</th>
+                    <th style="width: 15%;">Cumple</th>
+                    <th style="width: 30%;">Medidas de Mitigación / Observación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td class="task-name">Etiqueta de fábrica presente y legible (Capacidad WLL, Factor).</td><td><div class="options-cell"><label><input type="radio" name="e1" value="SI">SI</label><label><input type="radio" name="e1" value="NO">NO</label><label><input type="radio" name="e1" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr><td>2</td><td class="task-name">Ausencia de desgaste extremo por fricción o cantos vivos.</td><td><div class="options-cell"><label><input type="radio" name="e2" value="SI">SI</label><label><input type="radio" name="e2" value="NO">NO</label><label><input type="radio" name="e2" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr><td>3</td><td class="task-name">Libre de quemaduras por químicos, chispas de soldadura o calor.</td><td><div class="options-cell"><label><input type="radio" name="e3" value="SI">SI</label><label><input type="radio" name="e3" value="NO">NO</label><label><input type="radio" name="e3" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr><td>4</td><td class="task-name">Costuras principales intactas (sin hilos rotos ni deshilachados).</td><td><div class="options-cell"><label><input type="radio" name="e4" value="SI">SI</label><label><input type="radio" name="e4" value="NO">NO</label><label><input type="radio" name="e4" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr><td>5</td><td class="task-name">Cuerpo de la eslinga libre de nudos (reducen la carga).</td><td><div class="options-cell"><label><input type="radio" name="e5" value="SI">SI</label><label><input type="radio" name="e5" value="NO">NO</label><label><input type="radio" name="e5" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+                <tr><td>6</td><td class="task-name">Grilletes y ganchos sin fisuras, deformación o aperturas mayores al 10%.</td><td><div class="options-cell"><label><input type="radio" name="e6" value="SI">SI</label><label><input type="radio" name="e6" value="NO">NO</label><label><input type="radio" name="e6" value="N/A">N/A</label></div></td><td><input type="text" class="text-comment"></td></tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px; padding: 15px; background: #fee2e2; border-radius: 6px; font-weight: bold;">
+            ¿EL EQUIPO SE ENCUENTRA APTO PARA OPERAR?: 
+            <label style="margin-left:20px;"><input type="radio" name="apto" value="SÍ"> SÍ</label>
+            <label style="margin-left:15px;"><input type="radio" name="apto" value="NO"> NO</label>
+        </div>
+    </div>
+
+    <!-- Barra Inferior de Control -->
+    <div class="action-bar">
+        <button class="btn btn-print" onclick="window.print()">Exportar PDF / Imprimir</button>
+        <button class="btn btn-whatsapp" onclick="enviarWhatsApp()">Enviar por WhatsApp 💬</button>
+    </div>
+</div>
+
+<script>
+    let activeSheet = 'rampla';
+
+    function openSheet(evt, sheetName) {
+        activeSheet = sheetName;
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
+        }
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(sheetName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    function enviarWhatsApp() {
+        let mensaje = "";
+
+        if (activeSheet === 'rampla') {
+            // Recopilar cabecera de Camión Rampla
+            let obra = document.getElementById('r_obra').value || "No especificado";
+            let chofer = document.getElementById('r_chofer').value || "No especificado";
+            let fecha = document.getElementById('r_fecha').value || "No especificada";
+            let patente = document.getElementById('r_patente').value || "No especificada";
+            let kms = document.getElementById('r_kms').value || "0";
+
+            mensaje = `*📋 CHECKLIST: CAMIÓN RAMPLA*\n`;
+            mensaje += `*Transportes Antemi SpA*\n\n`;
+            mensaje += `*Fecha:* ${fecha}\n`;
+            mensaje += `*Conductor:* ${chofer}\n`;
+            mensaje += `*Obra/Base:* ${obra}\n`;
+            mensaje += `*Patente:* ${patente}\n`;
+            mensaje += `*Kilometraje:* ${kms} KMS\n\n`;
+            mensaje += `*DETALLE DE REVISIÓN:*\n`;
+
+            // Recopilar filas de la tabla
+            let filas = document.querySelectorAll("#table_rampla tbody tr");
+            filas.forEach(fila => {
+                if (!fila.classList.contains('section-divider')) {
+                    let elemento = fila.querySelector(".task-name").innerText;
+                    let seleccionado = fila.querySelector("input[type='radio']:checked");
+                    let obs = fila.querySelector(".text-comment").value;
+                    
+                    let resultado = seleccionado ? seleccionado.value : "❌ SIN MARCAR";
+                    mensaje += `• ${elemento}: *${resultado}* ${obs ? `(_Obs: ${obs}_)` : ''}\n`;
+                }
+            });
+
+        } else {
+            // Recopilar cabecera de Eslingas
+            let fecha = document.getElementById('e_fecha').value || "No especificada";
+            let area = document.getElementById('e_area').value || "No especificada";
+            let inspector = document.getElementById('e_inspector').value || "No especificado";
+            let aptoElement = document.querySelector("input[name='apto']:checked");
+            let apto = aptoElement ? aptoElement.value : "SIN EVALUAR";
+
+            mensaje = `*📋 CHECKLIST: ESLINGAS Y GRILLETES*\n`;
+            mensaje += `*Transportes Antemi SpA*\n\n`;
+            mensaje += `*Fecha:* ${fecha}\n`;
+            mensaje += `*Área:* ${area}\n`;
+            mensaje += `*Inspector:* ${inspector}\n`;
+            mensaje += `*ESTADO OPERATIVO:* *${apto}*\n\n`;
+            mensaje += `*DETALLE DE REVISIÓN:*\n`;
+
+            // Recopilar filas de la tabla de eslingas
+            let filas = document.querySelectorAll("#table_eslingas tbody tr");
+            filas.forEach(fila => {
+                let elemento = fila.querySelector(".task-name").innerText;
+                let seleccionado = fila.querySelector("input[type='radio']:checked");
+                let obs = fila.querySelector(".text-comment").value;
+                
+                let resultado = seleccionado ? seleccionado.value : "❌ SIN MARCAR";
+                mensaje += `• ${elemento}: *${resultado}* ${obs ? `(_Obs: ${obs}_)` : ''}\n`;
+            });
+        }
+
+        // Encodificar el texto para que sea compatible con un link web
+        let mensajeUrl = encodeURIComponent(mensaje);
+        
+        // Abre WhatsApp con el texto ya formateado en negritas y listas
+        window.open(`https://api.whatsapp.com/send?text=${mensajeUrl}`, '_blank');
+    }
+</script>
+
+</body>
+</html>
